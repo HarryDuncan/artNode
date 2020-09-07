@@ -16,13 +16,15 @@ router.use(bodyParser.json({limit: '50mb'}));
 router.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 
+
 router.post('/updateImage:type', (req, res) => {
     console.log(req, res)
    res.sendStatus(400)
 })
 
+
 router.post('/uploadImage:type', (req, res) => {
-  if(process.env.NODE_ENV === 'dev'){
+  if(process.env.NODE_ENV !== 'dev'){
     fileHandleLocal.upload(req, res, (err) => {
     if(err){
         res.sendStatus(400)
@@ -39,7 +41,6 @@ router.post('/uploadImage:type', (req, res) => {
       return res.json({'imageUrl' : req.files[0].location})
     });
   }
-
 });
 
 

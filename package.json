@@ -25,7 +25,9 @@
     "multer": "^1.4.2",
     "multer-s3": "^2.7.0",
     "mysql": "github:mysqljs/mysql",
+    "qrcode": "^1.4.4",
     "router": "^1.3.3",
+    "speakeasy": "^2.0.0",
     "stripe": "^6.12.1",
     "uuid": "^7.0.3"
   },

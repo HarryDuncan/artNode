@@ -4,12 +4,13 @@ const router = express.Router()
 var bodyParser = require('body-parser');
 const cors = require('cors');
 const connection = require('./../db.js')
-const bcrypt = require('bcryptjs')
+
 const selectAllPaintings = 'SELECT * FROM _painting_table ORDER BY PaintingYear DESC';
 const selectAllProducts = 'SELECT * FROM _product_table';
 const selectAllContent = 'SELECT * FROM _content_table';
 const cache = require('./../cacheHandler.js')
 const inventory = require('./../inventoryManagement.js')
+
 
 router.get('/_painting_table', (req, res) =>{
 	if(cache.retrieveCache('_paintings') === null){
@@ -89,38 +90,6 @@ router.get('/_product_table', (req, res) =>{
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
-
-router.post('/login', (req, res) =>{
-	var userName = req.body.name;
-	var pass = req.body.pass;
-	
-	const GetUser = `SELECT * FROM users where userName = "${userName}"`
-	connection.query(GetUser, userName, (err, results) =>{
-		if(err){
-			return res.send(err)
-		}
-		else if(results === []){
-			return res.sendStatus(401)
-
-		}else{
-			try{
-				let savedPword = results[0].pWord
-				bcrypt.compare(pass, savedPword, (err, isMatch) => {
-	  				if(isMatch === true){
-	  					
-	  					res.sendStatus(200)
-	  				}else{
-	  					res.sendStatus(401)
-	  				}
-				});
-			}catch{
-			res.sendStatus(403)
-			}
-		
-		}
-	})
-	
-})
 
 
 

@@ -28,13 +28,24 @@ function checkFileType(file, cb){
   }
 }
 
+const getFileLocation = (req) =>{
+  let url = req.url
+  url = url.substring(url.indexOf(':') + 1, url.length)
+  let returnURL = 'harryjdee.com/images/' + url
+  return returnURL
+}
+
+
+
 const uploadS3 = multer({
   storage: multerS3({
     s3,
-    bucket: 'harryjdee.com/static/media',
+    bucket: function(req, file, cb){
+        cb(null, getFileLocation(req))
+    },
     acl: 'public-read',
     metadata: function (req, file, cb) {
-      cb(null, {fieldName: 'TESTING_META_DATA!'});
+      cb(null, {fieldName: 'Meta'});
     },
     key: function (req, file, cb) {
       cb(null, file.originalname)
