@@ -1,6 +1,5 @@
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
-
 const emailTemplates = require('./../emailTemplates/emailTemplateGenerator')
 
 
@@ -18,6 +17,8 @@ AWS.config.update({
 
 const generateSubject = (type , orderData) => {
   switch(type){
+    case 'Order Fufilled':
+      return 'Your order is on its way!'
     case 'Purchase Receipt':
     default:
       return 'Purchase Receipt'

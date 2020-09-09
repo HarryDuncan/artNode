@@ -1,7 +1,9 @@
+const connection = require('./db.js')
+const cache = require('./cacheHandler.js')
+
 const formatVariations = (variationData) => {
 	let returnObj ={}
 	let vData = JSON.parse(variationData)
-	console.log(variationData)
 	for(let i in vData['value']){
 		let item = vData['value'][i]
 		returnObj[item['itemTitle']] = item['stock']
@@ -68,5 +70,29 @@ const updateInventory = (productData, inventoryCache) =>{
 }
 
 
+// Function to make sure inventory is properly initalized 
+const safeRetrieveInventory = () => {
+  return new Promise(function(resolve, reject){
+     // Checks Cache 
+    let product_inventory = cache.retrieveCache('_inventory')
+    if(product_inventory === null){
+      // If not in cache - retrieves product data - to have most up to date
+        connection.query('SELECT * FROM _product_table', (err, results) => {
+        if(err){
+            reject(err)
+          }else{
+            cache.updateCache('_products', results)
+            let stock_inventory = initializeInventory(results)
+            cache.updateCache('_inventory', stock_inventory)
+            resolve(stock_inventory)
+          }
+        })
+      }else{
+        resolve(product_inventory)
+      }
+  })
+}
+
+exports.safeRetrieveInventory = safeRetrieveInventory;
 exports.updateInventory = updateInventory;
 exports.initializeInventory  = initializeInventory;

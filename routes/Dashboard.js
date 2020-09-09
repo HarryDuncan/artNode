@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 const cors = require('cors');
 const functions = require('./../functions.js')
 const cache = require('./../cacheHandler.js')
-
+const aws_email = require('./../services/ses_sendMail.js')
 const selectAllOrders = 'SELECT * FROM _order_table';
 
 
@@ -83,9 +83,9 @@ router.post('/update_order', (req, res) => {
 		if(err){
 			res.sendStatus(400)
 		}else{
-			let newCache = functions.updateCurrentCache(req.body['new_item'], req.body.item_ID ,cache.retrieveCache('_orders'))
-			cache.updateCache(cacheTable, newCache)
-			res.sendStatus(200)
+			console.log(results)
+			aws_email.sendEmail('Order Fufilled',  {'order_data' : {'Customer' : {'email' : 'harry@harryjdee.com' } } , 'shippingData' : req.body['new_item'] })
+			res.sendStatus(400)
 		}
 	})
 })

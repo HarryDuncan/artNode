@@ -13,29 +13,7 @@ const inventory = require('./../inventoryManagement.js')
 var cloneDeep = require('lodash.clonedeep');
 const aws_email = require('./../services/ses_sendMail.js')
 
-// Function to make sure inventory is properly initalized 
-const _safeRetrieveInventory = () => {
 
-  return new Promise(function(resolve, reject){
-     // Checks Cache 
-    let product_inventory = cache.retrieveCache('_inventory')
-    if(product_inventory === null){
-      // If not in cache - retrieves product data - to have most up to date
-        connection.query('SELECT * FROM _product_table', (err, results) => {
-        if(err){
-            reject(err)
-          }else{
-            cache.updateCache('_products', results)
-            let stock_inventory = inventory.initializeInventory(results)
-            cache.updateCache('_inventory', stock_inventory)
-            resolve(stock_inventory)
-          }
-        })
-      }else{
-        resolve(product_inventory)
-      }
-  })
-}
 
 router.use(require("body-parser").text());
 
@@ -43,9 +21,8 @@ router.post("/checkout", async (req, res) => {
   let error;
   let status;
   const { product, token , order} = req.body;
-  
    try{
-     product_inventory = _safeRetrieveInventory().then((prod_inventory) =>{
+     product_inventory = inventory.safeRetrieveInventory().then((prod_inventory) =>{
      inventory.updateInventory(order, cloneDeep(prod_inventory)).then((response) =>{
      cache.updateCache('_inventory',response)
      productData = cache.retrieveCache('_products')
@@ -103,7 +80,7 @@ router.post("/checkout", async (req, res) => {
           formattedItem['dataType'] = 'order'
           let newCache = functions.addToCurrentCache(formattedItem,cache.retrieveCache('_orders'))
           cache.updateCache('_orders', newCache)
-          aws_email.sendEmail('Purchase Receipt', {'order_data' : order, 'purchase_data' : token})
+          aws_email.sendEmail('Purchase Receipt', {'order_data' : order, 'purchase_data' : token, 'transaction_data' : product})
           // TODO Email
           return res.json({
             status : 200,
@@ -112,14 +89,16 @@ router.post("/checkout", async (req, res) => {
         }
       })
       }).catch((error) => {
-          let originalInventory = _safeRetrieveInventory()
-          console.log(originalInventory)
-          console.log('<------------------>')
-          console.log(error)
+         
+          return res.json({
+            status : 409,
+            conflict : error
+          })
       })
     }).catch((error) => {
-      console.log(error)
-      console.log('<------------------>')
+      return res.json({
+        status : 400
+      })
     })
     
    
