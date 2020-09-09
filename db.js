@@ -2,7 +2,7 @@ const mysql = require('mysql');
 const fs = require('fs');
 require('dotenv').config()
 
-/*
+
 let config = {
 	host : process.env.DB_HOST,
 	user : process.env.DB_USER,
@@ -14,8 +14,7 @@ let config = {
 	}
 }
 
-*/
-
+/*
 let config = {
 	host : process.env.DB_HOST,
 	user : process.env.DB_USER,
@@ -24,7 +23,7 @@ let config = {
 	multipleStatements: true,
 }
 
-
+*/
 
 const connection = mysql.createConnection(config);
 

@@ -18,7 +18,6 @@ var router = express.Router();
  	const S3Resolve = require('./routes/S3Resolver.js')
  	const Shop = require('./routes/Shop.js')
  	const Accounts = require('./routes/Accounts.js')
-
  	app.use('', S3Resolve);
  	app.use('',Main);
  	app.use('', Shop);
@@ -30,8 +29,5 @@ var router = express.Router();
 
 
 app.listen(4000, () => {
-
-	console.log(process.env.NODE_ENV )
 	console.log('Running')
-	
 })
