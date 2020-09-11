@@ -26,8 +26,6 @@ const generateSubject = (type , orderData) => {
   
 }
 const sendEmail = (type , orderData) => {
-  console.log(orderData)
-
   var params = {
     Destination: { /* required */
       CcAddresses: [
@@ -65,7 +63,6 @@ const sendEmail = (type , orderData) => {
   // Handle promise's fulfilled/rejected states
   sendPromise.then(
     function(data) {
-      console.log(data.MessageId);
     }).catch(
       function(err) {
       console.error(err, err.stack);

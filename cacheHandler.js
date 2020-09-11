@@ -41,9 +41,7 @@ const safeRetrieveCache = (cacheName) => {
         if(err){
             reject(err)
           }else{
-           	
             updateCache(cacheName, results)
-
             // If retrieving productData update inventory cache too
             if(cacheName === '_products'){
             	let stock_inventory = inventory.initializeInventory(results)
@@ -59,6 +57,16 @@ const safeRetrieveCache = (cacheName) => {
 	})
 }
 
+// gets an item from the cache - Must be id and called when safeRetrieveCache resolves
+const retrieveItemFromCache = (cache, key, value ) => {
+	for(let i in cache){
+		if(cache[i][key] !== undefined && Number(cache[i][key]) === Number(value)){
+			return cache[i]
+		}
+	}
+	return 'not found'
+}
 exports.safeRetrieveCache = safeRetrieveCache;
+exports.retrieveItemFromCache = retrieveItemFromCache;
 exports.retrieveCache = retrieveCache;
 exports.updateCache = updateCache;

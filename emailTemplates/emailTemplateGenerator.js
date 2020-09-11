@@ -4,16 +4,13 @@ require('dotenv').config()
 
 // General Functions
 const getImage = (productID) => {
-	let products = cache.safeRetrieveCache('_products').then((response) =>{
-		for(let i in products){
-			if(productID === products[i]['ID']){
-				return `<img class='product-img' src=${process.env.S3_IMAGE_ROUTE}products${products[i]['url']}.jpg'/>`
-			}
+	let products = cache.retrieveCache('_products')
+	for(let i in products){
+		if(Number(productID) === Number(products[i]['ID'])){
+			return `<img class='product-img' src='https://harryjdee.com/images/products/${products[i]['url']}.jpg'/>`
 		}
-		return `<div/>`
-	}).catch((err) => {
-		return `<div/>`
-	})
+	}
+	return `<div/>`
 }
 
 // Receipt Functions 
@@ -58,14 +55,30 @@ const generateSummaryItems = (productsData) => {
 	}
 	return returnStr
 }
-const generateOrderSummary = (emailOrderData, transactionData) => {
-	let productsObj = JSON.parse(emailOrderData['value'])
+const generateOrderSummary = (emailOrderData) => {
+	let productsObj = JSON.parse(emailOrderData['OrderDetails'])
 	return `<div class="section" id='recipt'>
 					<h1>Order Summary</h1>
 					${generateSummaryItems(productsObj)}
 			</div>`
 }
 
+const returnShippingDetails = (shippingDetails) => {
+	if(shippingDetails !== undefined && shippingDetails.length > 1){
+		return `<div id='shipping-details'><p>${shippingDetails}</p></div>`
+	}else{
+		return `<div/>`
+	}
+}
+
+const generateShippingSummary = (shippingData) => {
+	return `<div class="section" id='recipt'>
+					<h1>Shipping Details</h1>
+					<p>Tracking No: ${shippingData['ShippingNo']['value']}</p>
+					<p>Shipping With: ${shippingData['ShippingCompany']['value']}</p>
+					${returnShippingDetails(shippingData['ShippingDetails']['value'])}
+			</div>`
+}
 
 
 const getPurchaseMethod = (emailPurchaseData) => {
@@ -85,14 +98,14 @@ const generatePurchaseDetails = (emailPurchaseData, emailTransactionData) => {
 
 const generateEmailTemplate = (emailTemplate, emailData) => {
 	let returnHTML = emailBody.emailHeader
-	console.log(emailTemplate)
 	switch(emailTemplate){
 		case 'Purchase Receipt':
 			returnHTML += emailBody.receiptStart + `${generateReceipt(emailData['order_data']['Order'], emailData['transaction_data'])} ${generatePurchaseDetails(emailData['order_data'], emailData['purchase_data'])}`
 			break;
 		case 'Order Fufilled':
-			console.log(emailData)
-			returnHTML += emailBody.orderStatusStart + `${generateOrderSummary(emailData['order_data']['Order'], emailData['transaction_data'])}`
+			//console.log(emailData)
+			console.log('<-------------------------------->')
+			returnHTML += emailBody.orderStatusStart + `${generateShippingSummary(emailData['shippingData'])}${generateOrderSummary(emailData['order_data'])}`
 			break;
 	}
 	returnHTML += emailBody.footer

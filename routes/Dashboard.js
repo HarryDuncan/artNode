@@ -83,9 +83,16 @@ router.post('/update_order', (req, res) => {
 		if(err){
 			res.sendStatus(400)
 		}else{
-			console.log(results)
-			aws_email.sendEmail('Order Fufilled',  {'order_data' : {'Customer' : {'email' : 'harry@harryjdee.com' } } , 'shippingData' : req.body['new_item'] })
-			res.sendStatus(400)
+			cache.safeRetrieveCache('_orders').then((response) => {	
+				let orderObj = cache.retrieveItemFromCache(response, 'ID', req.body['item_ID'])
+				orderObj['Customer']= {'email' : orderObj['CustomerEmail']}
+				aws_email.sendEmail('Order Fufilled',  {'order_data' : orderObj  , 'shippingData' : req.body['new_item']} )
+				return res.sendStatus(200)
+			}).catch((err) => {
+				console.log(err)
+				return res.sendStatus(400)
+			})
+			
 		}
 	})
 })

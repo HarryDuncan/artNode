@@ -1,3 +1,5 @@
+const Icon = require('./icons.js')
+
 const emailHeader = `<head>
 						<style>
 						body {
@@ -6,13 +8,28 @@ const emailHeader = `<head>
 
 
 						.main-section{ width: 60%; height:100vh !important; background-color: white; margin: 0 auto; margin-top: -3%; }
+						#header-img{
+								    height: 3em;
+								    margin-top: 4%;
+								    margin-bottom: 2%;
+								   
+							}
 						h1   {color: black; font-size: 1.2em; font-weight:600; letter-spacing: 0.15em}
+
 						p    {color: black; letter-spacing: 0.15em}
 						.section{
 							border-bottom: 2px solid black;
 							margin: 5%;
 						}
-
+						#shipping-details{
+							margin : 0 auto;
+							justify-self: center;
+							color: gray;
+						}
+						#receipt{
+							max-height: 50vh;
+							overflow-y: scroll;
+						}
 						.product-item{
 							display: flex;
 						    width: 80%;
@@ -27,7 +44,7 @@ const emailHeader = `<head>
 						    padding-right: 20%;
 							}
 						.product-img{
-							max-height: 15vh;
+							max-height: 7em;
 							float: right;
 						}
 						.purchase-details{
@@ -40,24 +57,32 @@ const emailHeader = `<head>
 							color: gray;
 							letter-spacing: 0.15em;
 							font-weight: 300;
+							font-size: small;
 						}
-
 						.footer{
-							position: absolute;
-							left: 20%;
-							bottom: 0;
-							height:6vh;
-							width: 60%;
 							background-color: black;
+							position: fixed;
+							bottom: 0;
+							left: 20%;
+							height: 5em;
+							color: white;
+							width: 60%;
+							display: flex;
+							flex-direction: column;
 							
 						}
-						a{	color: white; letter-spacing: 0.15em; font-size : 1em; margin: 5%; justify-content: center; text-decoration: none;}
-						#header-img{
-							    height: 6vh;
-							    margin-top: 5%;
-							    margin-bottom: 2%;
-							    max-height: 40px;
+						a{	color: white; letter-spacing: 0.15em; font-size : 1em; margin: 0 auto; justify-content: center;}
+						#footer-links-container{
+							margin : 0 auto;
+							margin-top: 0.5em;
+
 						}
+						#footer-links-container svg{
+							height: 0.8em;
+							width: auto;
+						}
+	
+
 					</style>
 						</head>
 					`
@@ -75,6 +100,8 @@ const orderStatusStart = `<div class='main-section'>
 
 const footer = `<div class="footer">
 				<a>harryjdee.com</a>
+				<div id='footer-links-container'>
+					${Icon.Insta}
 				</div></div></body>`
 
 module.exports.emailHeader = emailHeader;

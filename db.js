@@ -14,6 +14,7 @@ let config = {
 	}
 }
 
+
 /*
 let config = {
 	host : process.env.DB_HOST,
@@ -22,8 +23,8 @@ let config = {
 	database : process.env.DB_TABLE,
 	multipleStatements: true,
 }
-
 */
+
 
 const connection = mysql.createConnection(config);
 

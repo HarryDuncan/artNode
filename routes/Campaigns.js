@@ -10,14 +10,17 @@ const functions = require('./../functions.js')
 const connection = require('./../db.js')
 const cache = require('./../cacheHandler.js')
 const inventory = require('./../inventoryManagement.js')
-var cloneDeep = require('lodash.clonedeep');
+
+
+
+
 const aws_email = require('./../services/ses_sendMail.js')
 
 
 
 router.use(require("body-parser").text());
 
-router.post("/checkout", async (req, res) => {
+router.post("/donate", async (req, res) => {
   let error;
   let status;
   const { product, token , order} = req.body;
