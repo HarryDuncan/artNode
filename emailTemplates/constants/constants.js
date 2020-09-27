@@ -1,4 +1,4 @@
-const Icon = require('./icons.js')
+const Icon = require('./Icons.js')
 
 const emailHeader = `<head>
 						<style>
