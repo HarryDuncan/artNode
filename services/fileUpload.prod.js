@@ -1,56 +1,31 @@
-const aws = require('aws-sdk');
-const multer = require('multer');
-const multerS3 = require('multer-s3');
-require('dotenv').load();
+const AWS = require('aws-sdk');
+const Busboy = require('busboy');
 
-aws.config.update({
-  accessKeyId:  process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKeyId: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.REGION,
-});
+const BUCKET_NAME = 'harryjdee.com/images/products';
+// const IAM_USER_KEY = '';
+// const IAM_USER_SECRET = '';
 
-const s3 = new aws.S3();
-
-
-// Check File Type
-function checkFileType(file, cb){
-  // Allowed ext
-  const filetypes = /jpeg|jpg|png|gif/;
-  // Check ext
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  // Check mime
-  const mimetype = filetypes.test(file.mimetype);
-
-  if(mimetype && extname){
-    return cb(null,true);
-  } else {
-    cb('Error: Images Only!');
-  }
-}
-
-const getFileLocation = (req) =>{
-  let url = req.url
-  url = url.substring(url.indexOf(':') + 1, url.length)
-  let returnURL = 'harryjdee.com/images/' + url
-  return returnURL
+function uploadToS3(file) {
+  let s3bucket = new AWS.S3({
+   accessKeyId:  process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKeyId: process.env.AWS_SECRET_ACCESS_KEY,
+    Bucket: BUCKET_NAME
+  });
+  s3bucket.createBucket(function () {
+      var params = {
+        Bucket: BUCKET_NAME,
+        acl : 'public-read',
+        Key: file.name,
+        Body: file.data
+      };
+      s3bucket.upload(params, function (err, data) {
+        if (err) {
+          return err
+        }
+        return data.Location
+      });
+  });
 }
 
 
-
-const uploadS3 = multer({
-  storage: multerS3({
-    s3,
-    bucket: function(req, file, cb){
-        cb(null, getFileLocation(req))
-    },
-    acl: 'public-read',
-    metadata: function (req, file, cb) {
-      cb(null, {fieldName: 'Meta'});
-    },
-    key: function (req, file, cb) {
-      cb(null, file.originalname)
-    }
-  })
-})
-
-module.exports = uploadS3;
+exports.uploadToS3 = uploadToS3;

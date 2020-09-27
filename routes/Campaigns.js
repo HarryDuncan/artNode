@@ -12,13 +12,10 @@ const cache = require('./../cacheHandler.js')
 const inventory = require('./../inventoryManagement.js')
 
 
-
-
 const aws_email = require('./../services/ses_sendMail.js')
 
+router.get('/')
 
-
-router.use(require("body-parser").text());
 
 router.post("/donate", async (req, res) => {
   let error;

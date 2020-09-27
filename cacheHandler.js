@@ -18,9 +18,11 @@ const mapCacheToTableName = (cacheName) => {
 			return '_mixes_table';
 		case '_orders':
 			return '_order_table';
+		case '_campaigns':
+			return '_campaigns';
 		case '_settings':
 		default:
-			return '_site_settings'
+			return 'site_settings'
 	}
 }
 

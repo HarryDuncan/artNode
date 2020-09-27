@@ -3,18 +3,13 @@ const express = require('express')
 const router = express.Router()
 require('dotenv').load();
 const cors = require('cors');
-var bodyParser = require('body-parser');
+var Busboy = require('busboy');
 
 // Import for local file handler - Dev Only
 const fileHandleLocal = require('./../services/fileUpload.local')
 
 // Import for Prod - to S3
-const uploadS3 = require('./../services/fileUpload.prod')
-const singleUpload = uploadS3.any();
-
-router.use(bodyParser.json({limit: '50mb'}));
-router.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-
+const upload = require('./../services/fileUpload.prod')
 
 
 router.post('/updateImage:type', (req, res) => {
@@ -24,7 +19,7 @@ router.post('/updateImage:type', (req, res) => {
 
 
 router.post('/uploadImage:type', (req, res) => {
-  if(process.env.NODE_ENV === 'dev'){
+  if(process.env.NODE_ENV !== 'dev'){
     fileHandleLocal.upload(req, res, (err) => {
     if(err){
         res.sendStatus(400)
@@ -37,9 +32,37 @@ router.post('/uploadImage:type', (req, res) => {
       }
     })
   }else{
-      singleUpload(req, res, function(err){
-      return res.json({'imageUrl' : req.files[0].location})
+
+    var busboy = new Busboy({ headers: req.headers });
+
+    // The file upload has completed
+    busboy.on('finish', function() {
+      console.log('Upload finished');
+      
+      // Your files are stored in req.files. In this case,
+      // you only have one and it's req.files.element2:
+      // This returns:
+      // {
+      //    element2: {
+      //      data: ...contents of the file...,
+      //      name: 'Example.jpg',
+      //      encoding: '7bit',
+      //      mimetype: 'image/png',
+      //      truncated: false,
+      //      size: 959480
+      //    }
+      // }
+      
+      // Grabs your file object from the request.
+      const file = req.files.file;
+      console.log(file);
+      
+      // Begins the upload to the AWS S3
+      upload.uploadToS3(file);
     });
+
+    req.pipe(busboy);
+      // var busboy = new Busboy(req);
   }
 });
 

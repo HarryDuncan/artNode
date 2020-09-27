@@ -1,16 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const bodyParser = require('body-parser');
 const speakeasy = require('speakeasy');
 const qrcode = require('qrcode');
-
-
-app.use(cors());
 require('dotenv').config({path : '.env'})
+const fileUpload = require('express-fileupload');
+app.use(cors());
+app.use(fileUpload());
 
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
 
 var router = express.Router();
  	const Dashboard = require('./routes/Dashboard.js');

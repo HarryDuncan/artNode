@@ -30,6 +30,9 @@ router.post('/login', (req, res) =>{
 	  						encoding : 'ascii',
 	  						token : req.body.twoFactor,
 	  					})
+	  					console.log(verify)
+	  					console.log(req.body)
+	  					console.log(process.env.SECRET_ASCII)
 	  					if(verify){
 	  						res.sendStatus(200)
 	  					}else{
