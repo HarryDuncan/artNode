@@ -6,7 +6,7 @@ const formatVariations = (variationData) => {
 	let vData = JSON.parse(variationData)
 	for(let i in vData['value']){
 		let item = vData['value'][i]
-		returnObj[item['itemTitle']] = item['stock']
+		returnObj[item['itemTitle']] = item['Stock']
 	}
 	return returnObj
 }
@@ -18,13 +18,13 @@ const decrementItems = (stock_obj, purchased_products) => {
 		let itemID = purchased_products[productArr[i]]['ID']
 		let itemType = purchased_products[productArr[i]]['Type']
 		if(itemType === null){
-			if(return_Stock_Obj[itemID]['stock'] - 1 < 0){
+			if(return_Stock_Obj[itemID]['Stock'] - 1 < 0){
 				if(return_Stock_Obj['Error'] === undefined){
 					return_Stock_Obj['Error'] = []
 				}
-				return_Stock_Obj['Error'].push(stock_obj[itemID])
+				return_Stock_Obj['Error'].push(itemID)
 			}else{
-				return_Stock_Obj[itemID]['stock'] -= 1
+				return_Stock_Obj[itemID]['Stock'] -= 1
 			}
 		}else{
 			if(return_Stock_Obj[itemID][itemType] - 1 < 0){
@@ -48,10 +48,10 @@ const initializeInventory = (productData) =>{
 	let inventoryObj = {}
 	for(let i in productData){
 		inventoryObj[productData[i]['ID']] = {}
-		if(productData[i]['hasVariations'] === 0){
-			inventoryObj[productData[i]['ID']]['stock'] = productData[i]['stock']
+		if(productData[i]['HasVariations'] === 0){
+			inventoryObj[productData[i]['ID']]['Stock'] = productData[i]['Stock']
 		}else{
-			inventoryObj[productData[i]['ID']] = formatVariations(productData[i]['variations'])
+			inventoryObj[productData[i]['ID']] = formatVariations(productData[i]['Variations'])
 		}
 	}
 	return inventoryObj

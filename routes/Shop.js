@@ -12,7 +12,7 @@ const cache = require('./../cacheHandler.js')
 const inventory = require('./../inventoryManagement.js')
 var cloneDeep = require('lodash.clonedeep');
 const aws_email = require('./../services/ses_sendMail.js')
-
+// const accounting = require('./../services/accountingService.js')
 
 
 router.use(require("body-parser").text());
@@ -20,7 +20,7 @@ router.use(require("body-parser").text());
 router.post("/checkout", async (req, res) => {
   let error;
   let status;
-  const { product, token , order} = req.body;
+  const { product, token , order, contribution} = req.body;
    try{
      product_inventory = inventory.safeRetrieveInventory().then((prod_inventory) =>{
      inventory.updateInventory(order, cloneDeep(prod_inventory)).then((response) =>{
@@ -68,7 +68,8 @@ router.post("/checkout", async (req, res) => {
         valueArr.push(stockUpdates[i]['values'])
       }
     }
-   
+    console.log(multiquerystr)
+    console.log(contribution)
     connection.query(multiquerystr, [valueArr], (err, results) =>{
         if(err){
           res.sendStatus(400)
@@ -89,7 +90,8 @@ router.post("/checkout", async (req, res) => {
       })
       }).catch((error) => {
          
-          return res.status(409).json({
+          return res.json({
+            status : 409,
             conflict : error
           })
       })

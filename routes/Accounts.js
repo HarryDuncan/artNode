@@ -12,7 +12,7 @@ require('dotenv').config()
 router.post('/login', (req, res) =>{
 	var userName = req.body.name;
 	var pass = req.body.pass;
-	const GetUser = `SELECT * FROM _users where userName = "${userName}"`
+	const GetUser = `SELECT * FROM _users where UserName = "${userName}"`
 	connection.query(GetUser, userName, (err, results) =>{
 		if(err){
 			return res.sendStatus(401)
@@ -22,7 +22,7 @@ router.post('/login', (req, res) =>{
 
 		}else{
 			try{
-				let savedPword = results[0].pWord
+				let savedPword = results[0].Password
 				bcrypt.compare(pass, savedPword, (err, isMatch) => {
 	  				if(isMatch === true){
 	  					let verify = speakeasy.totp.verify({
@@ -30,9 +30,6 @@ router.post('/login', (req, res) =>{
 	  						encoding : 'ascii',
 	  						token : req.body.twoFactor,
 	  					})
-	  					console.log(verify)
-	  					console.log(req.body)
-	  					console.log(process.env.SECRET_ASCII)
 	  					if(verify){
 	  						res.sendStatus(200)
 	  					}else{

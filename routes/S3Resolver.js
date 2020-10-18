@@ -19,12 +19,12 @@ router.post('/updateImage:type', (req, res) => {
 
 
 router.post('/uploadImage:type', (req, res) => {
-  if(process.env.NODE_ENV !== 'dev'){
+  if(process.env.NODE_ENV === 'production'){
     fileHandleLocal.upload(req, res, (err) => {
     if(err){
         res.sendStatus(400)
     }else{
-          if(req.file == undefined){
+          if(req.files == undefined){
             res.sendStatus(400)
           } else {
             res.sendStatus(200)
@@ -55,7 +55,6 @@ router.post('/uploadImage:type', (req, res) => {
       
       // Grabs your file object from the request.
       const file = req.files.file;
-      console.log(file);
       
       // Begins the upload to the AWS S3
       upload.uploadToS3(file);

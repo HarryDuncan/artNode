@@ -3,10 +3,11 @@
 const connection = require('./../db.js')
 const express = require('express')
 const router = express.Router()
-var bodyParser = require('body-parser');
+let bodyParser = require('body-parser');
 const cors = require('cors');
 const functions = require('./../functions.js')
 const cache = require('./../cacheHandler.js')
+const inventory = require('./../inventoryManagement.js')
 const aws_email = require('./../services/ses_sendMail.js')
 const selectAllOrders = 'SELECT * FROM _order_table';
 
@@ -49,11 +50,15 @@ router.post('/new', (req, res) => {
 				cacheTable = '_products'
 				cacheDataType = 'products'
 			}
+
 			let formattedItem = functions.formatItem(req.body['new_item'])
 			formattedItem['ID'] = results.insertId;
 			formattedItem['dataType'] = cacheDataType
 			let newCache = functions.addToCurrentCache(formattedItem,cache.retrieveCache(cacheTable))
 			cache.updateCache(cacheTable, newCache)
+			if(req.body['data_table'] === '_product_table'){
+				inventory.initializeInventory(cache.safeRetrieveCache('_products'))
+			}
 			res.sendStatus(200)
 		}
 	})
@@ -98,15 +103,14 @@ router.post('/update_order', (req, res) => {
 })
 
 router.post('/update', (req, res) =>{
+	console.log(req.body)
 	let queryParams = functions.formatDataSQL('update_item', req.body)
 	connection.query(queryParams, (err, results) =>{
 		if(err){
+			console.log(err)
 			res.sendStatus(400)
 		}else{
-			let cacheTable = '_paintings'
-			if(req.body['data_table'] === '_product_table'){
-				cacheTable = '_products'
-			}
+			let cacheTable = cache.mapTableToCache(req.body['data_table'])
 			let newCache = functions.updateCurrentCache(req.body['new_item'], req.body.item_ID ,cache.retrieveCache(cacheTable))
 			cache.updateCache(cacheTable, newCache)
 			res.sendStatus(200)

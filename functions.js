@@ -20,33 +20,33 @@ const updateStockSQL = (inventory, productData) =>{
 
 	let updateStr = ''
 	let nonVariationStatementObj = 
-									{'head' : `UPDATE _product_table set stock = case `,
+									{'head' : `UPDATE _product_table set Stock = case `,
 									 'updateStatement' : '',
 									 'whereID' : [],
 									 'update' : false
 									}
 	let variationStatementObj = 
-									{'head' : `UPDATE _product_table set variations = case `,
+									{'head' : `UPDATE _product_table set Variations = case `,
 									 'updateStatement' : '',
 									 'whereID' : [],
 									 'update' : false
 									}
 	for(let i in productData){
-		if(productData[i]['hasVariations'] === 0){
-			if(productData[i]['stock'] !== inventory[productData[i]['ID']]['stock']){
-				productData[i]['stock'] = inventory[productData[i]['ID']]['stock']
+		if(productData[i]['HasVariations'] === 0){
+			if(productData[i]['Stock'] !== inventory[productData[i]['ID']]['Stock']){
+				productData[i]['Stock'] = inventory[productData[i]['ID']]['Stock']
 				nonVariationStatementObj['update'] = true;
-				nonVariationStatementObj['updateStatement'] += ` when ID = ${productData[i]['ID']} then ${productData[i]['stock']} `
+				nonVariationStatementObj['updateStatement'] += ` when ID = ${productData[i]['ID']} then ${productData[i]['Stock']} `
 				nonVariationStatementObj['whereID'].push(productData[i]['ID'])
 			}
 		}else{
-			let variationData = JSON.parse(productData[i]['variations'])
+			let variationData = JSON.parse(productData[i]['Variations'])
 			let productDetailsData = variationData['value']
 			console.log(productDetailsData)
 			for(let details in productDetailsData){
-				if(productDetailsData[details]['stock'] !== inventory[productData[i]['ID']][productDetailsData[details]['itemTitle']]){
+				if(productDetailsData[details]['Stock'] !== inventory[productData[i]['ID']][productDetailsData[details]['itemTitle']]){
 					variationStatementObj['update'] = true;
-					productDetailsData[details]['stock'] = inventory[productData[i]['ID']][productDetailsData[details]['itemTitle']]
+					productDetailsData[details]['Stock'] = inventory[productData[i]['ID']][productDetailsData[details]['itemTitle']]
 					variationData['value'] =  productDetailsData
 					variationStatementObj['updateStatement'] += ` when ID = ${productData[i]['ID']} then '${JSON.stringify(variationData)}' `
 					variationStatementObj['whereID'].push(productData[i]['ID'])
@@ -121,8 +121,8 @@ const formatDataSQL = (action, data) => {
 			let updateStatement = `UPDATE ${data.data_table}  SET ${updateStr.substring(0, updateStr.length - 2)} WHERE ID = ${data.item_ID}`
 			return updateStatement
 		case 'add_order':
-			let orderStr = '(CustomerName, CustomerEmail, Address, OrderDetails, OrderStat, RefID, Purchased)'
-			let orderValues = [data['Customer']['name'], data['Customer']['email'], data['Customer']['address'], data['Order']['value'], "Pending", data['id'], moment().format()]
+			let orderStr = '(CustomerName, CustomerEmail, Address, OrderDetails, OrderStat, RefID, Purchased, Contribution)'
+			let orderValues = [data['Customer']['name'], data['Customer']['email'], data['Customer']['address'], data['Order']['value'], "Pending", data['id'], moment().format(), data['Order']['Contribution']]
 			let orderStatement = `INSERT INTO _order_table ${orderStr}  VALUES ?`
 			return {'insertStatement' : orderStatement, 'values' : orderValues}
 		case 'delete_item':

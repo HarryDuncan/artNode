@@ -22,7 +22,27 @@ const mapCacheToTableName = (cacheName) => {
 			return '_campaigns';
 		case '_settings':
 		default:
-			return 'site_settings'
+			return '_site_settings'
+	}
+}
+
+const mapTableToCache = (tableName) =>{
+	switch(tableName){
+		case '_product_table':
+			return '_products';
+		case '_painting_table':
+			return '_paintings';
+		case '_content_table':
+			return '_content';
+		case '_mixes_table':
+			return '_mixes';
+		case '_order_table':
+			return '_orders';
+		case '_campaigns':
+			return '_campaigns';
+		case '_site_settings':
+		default:
+			return '_settings'
 	}
 }
 
@@ -72,3 +92,4 @@ exports.safeRetrieveCache = safeRetrieveCache;
 exports.retrieveItemFromCache = retrieveItemFromCache;
 exports.retrieveCache = retrieveCache;
 exports.updateCache = updateCache;
+exports.mapTableToCache = mapTableToCache;

@@ -7,7 +7,7 @@ const getImage = (productID) => {
 	let products = cache.retrieveCache('_products')
 	for(let i in products){
 		if(Number(productID) === Number(products[i]['ID'])){
-			return `<img class='product-img' src='https://harryjdee.com/images/products/${products[i]['url']}.jpg'/>`
+			return `<img class='product-img' src='https://harryjdee.com/images/products/${products[i]['Url']}.jpg'/>`
 		}
 	}
 	return `<div/>`
@@ -34,7 +34,7 @@ const generateReceipt = (emailOrderData, transactionData) => {
 	return `<div class="section" id='recipt'>
 					<h1>Purchase Receipt</h1>
 					${generateOrder(productsObj)}
-					<h1>Total: ${transactionData['currency']} $${transactionData['price']}</h1>	
+					<h1>Total: ${transactionData['currency']} $${transactionData['Price']}</h1>	
 			</div>`
 }
 
