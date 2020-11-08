@@ -10,7 +10,7 @@ require('dotenv').load();
 AWS.config.update({
     accessKeyId:  process.env.AWS_ACCESS_KEY_ID,
     secretAccessKeyId: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.REGION,
+    region: 'us-east-1',
     })
 // Create sendEmail params 
 

@@ -84,7 +84,8 @@ router.get('/all', (req, res) => {
 		cache.safeRetrieveCache('_paintings'), 
 		cache.safeRetrieveCache('_products'),
 		cache.safeRetrieveCache('_content'),
-		cache.safeRetrieveCache('_mixes')
+		cache.safeRetrieveCache('_mixes'),
+		cache.safeRetrieveCache('_campaigns')
 		]
 		).then((values) => {
   	 		return res.json({

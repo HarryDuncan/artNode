@@ -1,5 +1,33 @@
 const moment = require('moment');
 
+// Check if isInStock 
+const isInStock = (inventory, cart) => {
+	for(let i in cart){
+		inventory[cart[i]] = inventory[cart[i] - 1]
+	}
+	let inventoryArr = Object.keys(inventory)
+	for(let i in inventoryArr){
+		if(inventory[inventoryArr[i]] < 0){
+			return false
+		}
+	}
+	return true
+}
+
+
+const getOutOfStock = (inventory, cart) => {
+	let returnObj = {}
+	for(let i in cart){
+		inventory[cart[i]] = inventory[cart[i] - 1]
+	}
+	let invetoryArr = Object.keys(inventory)
+	for(let i in inventoryArr){
+		if(inventory[inventoryArr[i]] < 0){
+			returnObj[inventoryArr[i]] =  inventory[inventoryArr[i]]
+		}
+	}
+	return returnObj
+}
 
 // Creates an SQL Query that updates the products table if the inventory has changed and updates the product cache
 const updateStockSQL = (inventory, productData) =>{
@@ -120,6 +148,8 @@ const formatDataSQL = (action, data) => {
 			}
 			let updateStatement = `UPDATE ${data.data_table}  SET ${updateStr.substring(0, updateStr.length - 2)} WHERE ID = ${data.item_ID}`
 			return updateStatement
+		case 'purchase_contribution':
+			return `UPDATE _campaigns SET Total = Total + ${data['contribution']}, ContributionCount =  ContributionCount + 1 WHERE ID = ${data.campaignID}`
 		case 'add_order':
 			let orderStr = '(CustomerName, CustomerEmail, Address, OrderDetails, OrderStat, RefID, Purchased, Contribution)'
 			let orderValues = [data['Customer']['name'], data['Customer']['email'], data['Customer']['address'], data['Order']['value'], "Pending", data['id'], moment().format(), data['Order']['Contribution']]
@@ -134,11 +164,15 @@ const formatDataSQL = (action, data) => {
 
 // For updating Cache Objects
 const updateCurrentCache = (newData , itemID,   currentCache) => {
+	console.log(newData)
+	console.log(itemID)
+	console.log(currentCache)
 	try{
 		for(let i in currentCache){
 			if(currentCache[i]['ID'] === itemID){
 				let newObj = Object.assign({}, currentCache[i])
 				let fieldArr = Object.keys(newData)
+				console.log(fieldArr)
 				for(let field in fieldArr){
 					newObj[fieldArr[field]] = newData[fieldArr[field]]['value']
 				}
@@ -211,4 +245,6 @@ exports.updateCurrentCache = updateCurrentCache;
 exports.formatDataSQL = formatDataSQL;
 exports.formatOrderForCache = formatOrderForCache;
 exports.updateStockSQL = updateStockSQL;
+exports.isInStock = isInStock;
+exports.getOutOfStock = getOutOfStock;
 
