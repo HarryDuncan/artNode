@@ -101,7 +101,25 @@ const generatePurchaseDetails = (emailPurchaseData, emailTransactionData) => {
 
 
 
-
+const generateDonationReceipt = (donationData, payment, donor) => {
+	let campaigns = cache.retrieveCache('_campaigns')
+	let donatedTo = {}
+	for(let i in campaigns){
+		if(campaigns[i]['ID'] === donationData['CampaignID']){
+			donatedTo = campaigns[i]
+		}	
+	}
+		return `<div class="section" id='recipt'>
+					<h1>Donation Receipt</h1>
+					<p>Donor Name: ${donor['Name']}</p>
+					<p>Amount AUD: $${donationData['Amount']}</p>
+					<p>Donation To: ${donatedTo['Name']}</p>
+					<p>Donation ID: ${payment['id']}</p>
+					<p>Paid with ${payment['card']['brand']} ending in ${payment['card']['last4']}</p>
+					<p>This purchase will appear on your statement as harryjdee</p>
+				</div>`
+	
+}
 
 const generateEmailTemplate = (emailTemplate, emailData) => {
 	let returnHTML = emailBody.emailHeader
@@ -109,8 +127,10 @@ const generateEmailTemplate = (emailTemplate, emailData) => {
 		case 'Purchase Receipt':
 			returnHTML += emailBody.receiptStart + `${generateReceipt(emailData['order_data']['Order'], emailData['transaction_data'])} ${generatePurchaseDetails(emailData['order_data'], emailData['purchase_data'])}`
 			break;
+		case 'Donation Receipt':
+			returnHTML += emailBody.donationReceiptStart + `${generateDonationReceipt(emailData['donationData'], emailData['payment'], emailData['donorData'])} `
+			break;
 		case 'Order Fufilled':
-			console.log('<-------------------------------->')
 			returnHTML += emailBody.orderStatusStart + `${generateShippingSummary(emailData['shippingData'])}${generateOrderSummary(emailData['order_data'])}`
 			break;
 	}

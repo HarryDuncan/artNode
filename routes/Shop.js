@@ -14,28 +14,34 @@ var cloneDeep = require('lodash.clonedeep');
 const aws_email = require('./../services/ses_sendMail.js')
 router.use(require("body-parser").text());
 
+
+
+
 router.post("/payment_intents", async (req, res) => {
   if (req.method === "POST") {
     try {
-
       const { amount } = req.body;
       const paymentIntent = await stripe.paymentIntents.create({
             amount,
             currency: "aud"
           });
-      // Check if items are in stock
-      product_inventory = inventory.safeRetrieveInventory().then((prod_inventory) =>{
-        if(functions.isInStock(prod_inventory, req.body.checkoutItems)){
-           // Calculate amount
-          res.status(200).send(paymentIntent.client_secret);
-        }else{
-              let outOfStockItems = functions.getOutOfStock(prod_inventory, req.body.checkoutItems)
-              console.log(outOfStockItems)
-              return res.status(400)
-            }
-        }).catch((error) => {
-          return res.status(400)
-        })
+
+      if(req.body.dontation === undefined){
+         // Check if items are in stock
+        product_inventory = inventory.safeRetrieveInventory().then((prod_inventory) =>{
+          if(functions.isInStock(prod_inventory, req.body.checkoutItems)){
+             // Calculate amount
+            res.status(200).send(paymentIntent.client_secret);
+          }else{
+                let outOfStockItems = functions.getOutOfStock(prod_inventory, req.body.checkoutItems)
+                console.log(outOfStockItems)
+                return res.status(400)
+              }
+          }).catch((error) => {
+            return res.status(400)
+          })
+      }
+     
      
     } catch (err) {
       res.status(500).json({ statusCode: 500, message: err.message });
@@ -46,7 +52,7 @@ router.post("/payment_intents", async (req, res) => {
   }
 })
 
-router.post("/checkout", async (req, res) => {
+router.post("/checkout", (req, res) => {
   let error;
   let status;
   const { product, token , order} = req.body;
@@ -116,6 +122,7 @@ router.post("/checkout", async (req, res) => {
           })
       })
     }).catch((error) => {
+      console.log(error)
       return res.status(400).json({
         status : 400
       })

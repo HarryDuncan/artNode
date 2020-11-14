@@ -18,7 +18,9 @@ AWS.config.update({
 const generateSubject = (type , orderData) => {
   switch(type){
     case 'Order Fufilled':
-      return 'Your order is on its way!'
+      return 'Your Order Is On Its Way!'
+    case 'Donation Receipt':
+      return 'Thank You For Your Donation'
     case 'Purchase Receipt':
     default:
       return 'Purchase Receipt'

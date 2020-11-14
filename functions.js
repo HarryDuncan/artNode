@@ -151,7 +151,7 @@ const formatDataSQL = (action, data) => {
 		case 'purchase_contribution':
 			return `UPDATE _campaigns SET Total = Total + ${data['contribution']}, ContributionCount =  ContributionCount + 1 WHERE ID = ${data.campaignID}`
 		case 'add_order':
-			let orderStr = '(CustomerName, CustomerEmail, Address, OrderDetails, OrderStat, RefID, Purchased, Contribution)'
+			let orderStr = `(CustomerName, CustomerEmail, Address, OrderDetails, OrderStat, RefID, Purchased, Contribution)`
 			let orderValues = [data['Customer']['name'], data['Customer']['email'], data['Customer']['address'], data['Order']['value'], "Pending", data['id'], moment().format(), data['Order']['Contribution']]
 			let orderStatement = `INSERT INTO _order_table ${orderStr}  VALUES ?`
 			return {'insertStatement' : orderStatement, 'values' : orderValues}
