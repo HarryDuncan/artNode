@@ -94,7 +94,7 @@ router.post('/update_order', (req, res) => {
 				aws_email.sendEmail('Order Fufilled',  {'order_data' : orderObj  , 'shippingData' : req.body['new_item']} )
 				return res.sendStatus(200)
 			}).catch((err) => {
-				console.log(err)
+				
 				return res.sendStatus(400)
 			})
 			
@@ -103,7 +103,7 @@ router.post('/update_order', (req, res) => {
 })
 
 router.post('/update', (req, res) =>{
-	console.log(req.body)
+
 	let queryParams = functions.formatDataSQL('update_item', req.body)
 	connection.query(queryParams, (err, results) =>{
 		if(err){

@@ -85,7 +85,7 @@ router.post("/checkout", (req, res) => {
     cache.safeRetrieveCache('_campaigns').then((response) =>{
        let campaignItem = {}
 
-       // Todo - fix issue with campaing 
+     
        for(let i in response){
         if(response[i]['ID'] === order['campaignID']){
           response[i]['Total'] += order['contribution']
