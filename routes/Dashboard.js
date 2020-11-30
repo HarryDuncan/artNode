@@ -101,6 +101,19 @@ router.post('/update_order', (req, res) => {
 		}
 	})
 })
+router.post('/resend_email',(req, res) => {
+
+	cache.safeRetrieveCache('_campaigns').then((response) => {
+		cache.safeRetrieveCache('_products').then((re) => {	
+			aws_email.sendEmail(req.body.type,  req.body.data)
+			return res.sendStatus(200)
+	}).catch((err) => {
+				return res.sendStatus(400)
+			})
+	}).catch((err) => {		
+		return res.sendStatus(400)
+		})
+})
 
 router.post('/update', (req, res) =>{
 

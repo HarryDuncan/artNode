@@ -99,6 +99,37 @@ const generatePurchaseDetails = (emailPurchaseData, emailTransactionData) => {
 			</div>`
 }
 
+const generateDonationBlurbOnPurchase = (donationData) => {
+	let campaigns = cache.retrieveCache('_campaigns')
+	let donatedTo = {}
+	for(let i in campaigns){
+		if(campaigns[i]['ID'] === donationData['campaignID']){
+			donatedTo = campaigns[i]
+		}	
+	}
+	
+	return `<div class="section">
+					<h1>Your purchase has contributed ${donationData['contribution']} to ${donatedTo['Name']}</h1>
+					<p>${donatedTo['EmailContent']}</p>
+					<a href=${donatedTo['SiteUrl']}>For More Info Click Here</a>
+			</div>`
+}
+
+const generateDonationBlurbOnDonation = (donationData) => {
+	let campaigns = cache.retrieveCache('_campaigns')
+	let donatedTo = {}
+	for(let i in campaigns){
+		if(campaigns[i]['ID'] === donationData['campaignID']){
+			donatedTo = campaigns[i]
+		}	
+	}
+	
+	return `<div class="section">
+					<h1>Your purchase has contributed AUD $${donationData['contribution']} to ${donatedTo['Name']}</h1>
+					<p>${donatedTo['EmailContent']}</p>
+					<a href=${donatedTo['SiteUrl']}>For More Info Click Here</a>
+			</div>`
+}
 
 
 const generateDonationReceipt = (donationData, payment, donor) => {
@@ -109,7 +140,12 @@ const generateDonationReceipt = (donationData, payment, donor) => {
 			donatedTo = campaigns[i]
 		}	
 	}
-		return `<div class="section" id='recipt'>
+		return `<div class="section">
+					<h1>Your donation of AUD $${donationData['Amount']} has gone to support a great cause</h1>
+					<p>${donatedTo['EmailContent']}</p>
+					<a href=${donatedTo['SiteUrl']}>For More Info Click Here</a>
+				</div>
+				<div class="section" id='recipt'>
 					<h1>Donation Receipt</h1>
 					<p>Donor Name: ${donor['Name']}</p>
 					<p>Amount AUD: $${donationData['Amount']}</p>
@@ -125,7 +161,7 @@ const generateEmailTemplate = (emailTemplate, emailData) => {
 	let returnHTML = emailBody.emailHeader
 	switch(emailTemplate){
 		case 'Purchase Receipt':
-			returnHTML += emailBody.receiptStart + `${generateReceipt(emailData['order_data']['Order'], emailData['transaction_data'])} ${generatePurchaseDetails(emailData['order_data'], emailData['purchase_data'])}`
+			returnHTML += emailBody.receiptStart + `${generateDonationBlurbOnPurchase(emailData['order_data'])} ${generateReceipt(emailData['order_data']['Order'], emailData['transaction_data'])} ${generatePurchaseDetails(emailData['order_data'], emailData['purchase_data'])}`
 			break;
 		case 'Donation Receipt':
 			returnHTML += emailBody.donationReceiptStart + `${generateDonationReceipt(emailData['donationData'], emailData['payment'], emailData['donorData'])} `

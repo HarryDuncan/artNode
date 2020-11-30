@@ -2,13 +2,16 @@ const moment = require('moment');
 
 // Check if isInStock 
 const isInStock = (inventory, cart) => {
+	
 	for(let i in cart){
-		inventory[cart[i]] = inventory[cart[i] - 1]
+		inventory[cart[i]['ID']]['Stock'] = inventory[cart[i]['ID']]['Stock'] - 1
 	}
 	let inventoryArr = Object.keys(inventory)
+	
 	for(let i in inventoryArr){
-		if(inventory[inventoryArr[i]] < 0){
+		if(inventory[inventoryArr[i]]['Stock'] < 0){
 			return false
+		
 		}
 	}
 	return true
@@ -18,12 +21,13 @@ const isInStock = (inventory, cart) => {
 const getOutOfStock = (inventory, cart) => {
 	let returnObj = {}
 	for(let i in cart){
-		inventory[cart[i]] = inventory[cart[i] - 1]
+		inventory[cart[i]['ID']]['Stock'] = inventory[cart[i]['ID']]['Stock'] - 1
 	}
-	let invetoryArr = Object.keys(inventory)
+	let inventoryArr = Object.keys(inventory)
 	for(let i in inventoryArr){
-		if(inventory[inventoryArr[i]] < 0){
+		if(inventory[inventoryArr[i]]['Stock'] < 0){
 			returnObj[inventoryArr[i]] =  inventory[inventoryArr[i]]
+			
 		}
 	}
 	return returnObj
@@ -70,7 +74,6 @@ const updateStockSQL = (inventory, productData) =>{
 		}else{
 			let variationData = JSON.parse(productData[i]['Variations'])
 			let productDetailsData = variationData['value']
-			console.log(productDetailsData)
 			for(let details in productDetailsData){
 				if(productDetailsData[details]['Stock'] !== inventory[productData[i]['ID']][productDetailsData[details]['itemTitle']]){
 					variationStatementObj['update'] = true;

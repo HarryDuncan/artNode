@@ -7,7 +7,7 @@ const emailHeader = `<head>
 							margin: 0;}
 
 
-						.main-section{ width: 60%; height:100vh !important; background-color: white; margin: 0 auto; margin-top: -3%; }
+						.main-section{ width: 60%; height:100vh !important; overflow: auto; background-color: white; margin: 0 auto; margin-bottom : 8em ;margin-top: -3%; }
 						#header-img{
 								    height: 3em;
 								    margin-top: 4%;
@@ -26,6 +26,11 @@ const emailHeader = `<head>
 							margin : 0 auto;
 							justify-self: center;
 							color: gray;
+						}
+						#thank-you{
+							height : 5em;
+							margin: 0 auto;
+							clear: both;
 						}
 						#receipt{
 							max-height: 50vh;
@@ -50,21 +55,20 @@ const emailHeader = `<head>
 						}
 						.purchase-details{
 							display: flex;
-							float: left;
 							flex-direction: column;
 							margin: 5%;
 						}
 						.purchase-details span{
 							color: gray;
 							letter-spacing: 0.15em;
-							font-weight: 300;
+							font-weight: 500;
 							font-size: small;
 						}
 						.footer{
 							background-color: black;
 							position: fixed;
 							bottom: 0;
-							left: 20%;
+							margin: 0 auto;
 							height: 5em;
 							color: white;
 							width: 60%;
@@ -87,21 +91,23 @@ const emailHeader = `<head>
 					</style>
 						</head>
 					`
-const receiptStart = `<div class='main-section'>
+const receiptStart = `<div style="background-color:white;width60% overflow: auto; margin-bottom :8em"; class='main-section'>
 						<div class="section">
-							<img id='header-img'  alt={'Harry.J Dee'} src='https://harryjdee.com/images/icons/harryDLogo.png' />
+							<img id='header-img'  alt='Harry.J Dee' src='https://harryjdee.com/images/icons/harryDLogo.png' />
+							<img id='thank-you' alt='thanks' src='https://harryjdee.com/images/icons/ThankYou.png' /> 
 							<p>Thank you for supporting Harry.J Dee</p>
 					</div>`
 
 const orderStatusStart = `<div class='main-section'>
 						<div class="section">
-							<img id='header-img' alt={'Harry.J Dee'} src='https://harryjdee.com/images/icons/harryDLogo.png' />
+							<img id='header-img' alt='Harry.J Dee' src='https://harryjdee.com/images/icons/harryDLogo.png' />
 							<p>Your order is on it's way</p>
 						</div>`
 
-const donationReceiptStart = `<div class='main-section'>
+const donationReceiptStart = `<div class='main-section background-color:white;width60% overflow: auto;'>
 						<div class="section">
-							<img id='header-img' alt={'Harry.J Dee'} src='https://harryjdee.com/images/icons/harryDLogo.png' />
+							<img id='header-img' alt='Harry.J Dee' src='https://harryjdee.com/images/icons/harryDLogo.png' />
+							<img id='thank-you' alt='thanks' src='https://harryjdee.com/images/icons/ThankYou.png' /> 
 							<p>Thank you for your donation</p>
 					</div>`
 

@@ -33,12 +33,11 @@ router.post("/payment_intents", async (req, res) => {
              // Calculate amount
             res.status(200).send(paymentIntent.client_secret);
           }else{
-                let outOfStockItems = functions.getOutOfStock(prod_inventory, req.body.checkoutItems)
-                console.log(outOfStockItems)
-                return res.status(400)
+                return res.status(409).json({statusCode: 409})
+                
               }
           }).catch((error) => {
-            return res.status(400)
+            return res.status(500)
           })
       }
      
@@ -110,19 +109,20 @@ router.post("/checkout", (req, res) => {
           // TODO Email
           return res.json({
             status : 200,
-            updatedInventory : cache.retrieveCache('_inventory')
+            updatedInventory : cache.retrieveCache('_inventory'),
+            emailData : {'type' : 'Purchase Receipt', data : {'order_data' : order, 'purchase_data' : token, 'transaction_data' : product}}
           })
         }
       })
       }).catch((error) => {
-         console.log(error)
+         
           return res.json({
             status : 409,
             conflict : error
           })
       })
     }).catch((error) => {
-      console.log(error)
+ 
       return res.status(400).json({
         status : 400
       })
@@ -131,7 +131,7 @@ router.post("/checkout", (req, res) => {
    
  
   } catch (error) {
-    console.error("Error:", error);
+    
     status = "failure";
     res.json({ error, status });
   }

@@ -14,8 +14,6 @@ router.use(require("body-parser").json());
 
 router.post("/donate", (req, res) => {
 
-    console.log(req.body)
-    
     const {donor, payment, donationData} = req.body;
 
     // Adds donor to the donor table
@@ -51,6 +49,7 @@ router.post("/donate", (req, res) => {
        
           return res.json({
             status : 200,
+            emailData : {'type' : 'Donation Receipt', data : {'order_data' : {'Customer' : {'email' : donor['Email'] } } ,  'donorData' : donor, 'payment' : payment, 'donationData' : donationData }}
     
           })
         }
