@@ -29,7 +29,8 @@ router.post("/payment_intents", async (req, res) => {
       if(req.body.dontation === undefined){
          // Check if items are in stock
         product_inventory = inventory.safeRetrieveInventory().then((prod_inventory) =>{
-          if(functions.isInStock(prod_inventory, req.body.checkoutItems)){
+          let prodInv = cloneDeep(prod_inventory)
+          if(functions.isInStock(prodInv, req.body.checkoutItems)){
              // Calculate amount
             res.status(200).send(paymentIntent.client_secret);
           }else{
@@ -106,7 +107,7 @@ router.post("/checkout", (req, res) => {
           let newCache = functions.addToCurrentCache(formattedItem,cache.retrieveCache('_orders'))
           cache.updateCache('_orders', newCache)
           aws_email.sendEmail('Purchase Receipt', {'order_data' : order, 'purchase_data' : token, 'transaction_data' : product})
-          // TODO Email
+         
           return res.json({
             status : 200,
             updatedInventory : cache.retrieveCache('_inventory'),
@@ -115,7 +116,7 @@ router.post("/checkout", (req, res) => {
         }
       })
       }).catch((error) => {
-         
+          console.log(error)
           return res.json({
             status : 409,
             conflict : error
