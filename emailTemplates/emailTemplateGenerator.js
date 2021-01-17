@@ -100,6 +100,8 @@ const generatePurchaseDetails = (emailPurchaseData, emailTransactionData) => {
 }
 
 const generateDonationBlurbOnPurchase = (donationData) => {
+	
+	if(donationData['contribution'] !== undefined){
 	let campaigns = cache.retrieveCache('_campaigns')
 	let donatedTo = {}
 	for(let i in campaigns){
@@ -113,22 +115,27 @@ const generateDonationBlurbOnPurchase = (donationData) => {
 					<p>${donatedTo['EmailContent']}</p>
 					<a href=${donatedTo['SiteUrl']}>For More Info Click Here</a>
 			</div>`
+	}else{
+		return `<div/>`
+	}
 }
 
 const generateDonationBlurbOnDonation = (donationData) => {
-	let campaigns = cache.retrieveCache('_campaigns')
-	let donatedTo = {}
-	for(let i in campaigns){
-		if(campaigns[i]['ID'] === donationData['campaignID']){
-			donatedTo = campaigns[i]
-		}	
-	}
+
+		let campaigns = cache.retrieveCache('_campaigns')
+		let donatedTo = {}
+		for(let i in campaigns){
+			if(campaigns[i]['ID'] === donationData['campaignID']){
+				donatedTo = campaigns[i]
+			}	
+		}
+		
+		return `<div class="section">
+						<h1>Your purchase has contributed AUD $${donationData['contribution']} to ${donatedTo['Name']}</h1>
+						<p>${donatedTo['EmailContent']}</p>
+						<a href=${donatedTo['SiteUrl']}>For More Info Click Here</a>
+				</div>`
 	
-	return `<div class="section">
-					<h1>Your purchase has contributed AUD $${donationData['contribution']} to ${donatedTo['Name']}</h1>
-					<p>${donatedTo['EmailContent']}</p>
-					<a href=${donatedTo['SiteUrl']}>For More Info Click Here</a>
-			</div>`
 }
 
 

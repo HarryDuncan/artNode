@@ -79,24 +79,27 @@ router.post("/checkout", (req, res) => {
       }
     }
 
-    // Creates contribution data to update the campaign
-    let contributionObj = {'contribution': order['contribution'], campaignID : order['campaignID']}
-    let contributionStatement = functions.formatDataSQL('purchase_contribution',contributionObj)
-    cache.safeRetrieveCache('_campaigns').then((response) =>{
-       let campaignItem = {}
+    if(order['contribution'] !== undefined){
+      // Creates contribution data to update the campaign
+      let contributionObj = {'contribution': order['contribution'], campaignID : order['campaignID']}
+      let contributionStatement = functions.formatDataSQL('purchase_contribution',contributionObj)
+      cache.safeRetrieveCache('_campaigns').then((response) =>{
+         let campaignItem = {}
 
-     
-       for(let i in response){
-        if(response[i]['ID'] === order['campaignID']){
-          response[i]['Total'] += order['contribution']
-          response[i]['ContributionCount'] += 1
-          break;
-        }
-       }
-       cache.updateCache('_contribution', response)
+       
+         for(let i in response){
+          if(response[i]['ID'] === order['campaignID']){
+            response[i]['Total'] += order['contribution']
+            response[i]['ContributionCount'] += 1
+            break;
+          }
+         }
+         cache.updateCache('_contribution', response)
 
-    })
-    multiquerystr += contributionStatement
+      })
+      multiquerystr += contributionStatement
+    }
+    
     connection.query(multiquerystr, [valueArr], (err, results) =>{
         if(err){
           res.sendStatus(400)
