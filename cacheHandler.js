@@ -20,6 +20,8 @@ const mapCacheToTableName = (cacheName) => {
 			return '_order_table';
 		case '_campaigns':
 			return '_campaigns';
+		case '_shipping':
+			return '_shipping_cost';
 		case '_settings':
 		default:
 			return '_site_settings'
@@ -40,6 +42,8 @@ const mapTableToCache = (tableName) =>{
 			return '_orders';
 		case '_campaigns':
 			return '_campaigns';
+		case '_shipping_cost':
+			return '_shipping';
 		case '_site_settings':
 		default:
 			return '_settings'

@@ -6,7 +6,7 @@ const formatVariations = (variationData) => {
 	let vData = JSON.parse(variationData)
 	for(let i in vData['value']){
 		let item = vData['value'][i]
-		returnObj[item['itemTitle']] = item['Stock']
+		returnObj[item['itemTitle']] = item['stock']
 	}
 	return returnObj
 }

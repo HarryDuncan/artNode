@@ -41,8 +41,6 @@ router.post("/payment_intents", async (req, res) => {
             return res.status(500)
           })
       }
-     
-     
     } catch (err) {
       res.status(500).json({ statusCode: 500, message: err.message });
     }
@@ -59,11 +57,14 @@ router.post("/checkout", (req, res) => {
   try{
 
     // Safely retrieves product inventory then updates
-     product_inventory = inventory.safeRetrieveInventory().then((prod_inventory) =>{
-     inventory.updateInventory(order, cloneDeep(prod_inventory)).then((response) =>{
-     cache.updateCache('_inventory',response)
-     productData = cache.retrieveCache('_products')
-     let stockUpdates = functions.updateStockSQL(response, productData,)
+   product_inventory = inventory.safeRetrieveInventory().then((prod_inventory) =>{
+   inventory.updateInventory(order, cloneDeep(prod_inventory)).then((response) =>{
+   cache.updateCache('_inventory',response)
+   productData = cache.retrieveCache('_products')
+   console.log(productData)
+
+   
+   let stockUpdates = functions.updateStockSQL(response, productData,)
 
     status = "success";
 

@@ -4,10 +4,14 @@ const moment = require('moment');
 const isInStock = (inventory, cart) => {
 	
 	for(let i in cart){
-		inventory[cart[i]['ID']]['Stock'] = inventory[cart[i]['ID']]['Stock'] - 1
+		if(cart[i]['HasVariations']){
+			inventory[cart[i]['ID']]['Stock'] = Number(inventory[cart[i]['ID']][cart[i]['type']]) - 1
+		}else{
+			inventory[cart[i]['ID']]['Stock'] = inventory[cart[i]['ID']]['Stock'] - 1
+		}
+		
 	}
-	let inventoryArr = Object.keys(inventory)
-	
+	let inventoryArr = Object.keys(inventory)	
 	for(let i in inventoryArr){
 		if(inventory[inventoryArr[i]]['Stock'] < 0){
 			return false
@@ -75,9 +79,10 @@ const updateStockSQL = (inventory, productData) =>{
 			let variationData = JSON.parse(productData[i]['Variations'])
 			let productDetailsData = variationData['value']
 			for(let details in productDetailsData){
-				if(productDetailsData[details]['Stock'] !== inventory[productData[i]['ID']][productDetailsData[details]['itemTitle']]){
+				if(productDetailsData[details]['stock'] !== inventory[productData[i]['ID']][productDetailsData[details]['itemTitle']]){
 					variationStatementObj['update'] = true;
-					productDetailsData[details]['Stock'] = inventory[productData[i]['ID']][productDetailsData[details]['itemTitle']]
+
+					productDetailsData[details]['stock'] = inventory[productData[i]['ID']][productDetailsData[details]['itemTitle']]
 					variationData['value'] =  productDetailsData
 					variationStatementObj['updateStatement'] += ` when ID = ${productData[i]['ID']} then '${JSON.stringify(variationData)}' `
 					variationStatementObj['whereID'].push(productData[i]['ID'])
@@ -144,7 +149,7 @@ const formatDataSQL = (action, data) => {
 						if(body[fieldNames[i]]['value'] !== '' && body[fieldNames[i]]['value'] !== null){
 							updateStr += `${fieldNames[i]} = '${String(body[fieldNames[i]]['value'])}', `
 						}else if(body[fieldNames[i]]['value'] === null){
-								updateStr += `${fieldNames[i]} = ${String(body[fieldNames[i]]['value'])}, `
+								updateStr += `${fieldNames[i]} = ${String(body[fieldNames[i]]['value'])}; `
 						}
 						
 				}

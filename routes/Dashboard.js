@@ -115,8 +115,8 @@ router.post('/resend_email',(req, res) => {
 })
 
 router.post('/update', (req, res) =>{
-
 	let queryParams = functions.formatDataSQL('update_item', req.body)
+	console.log(queryParams)
 	connection.query(queryParams, (err, results) =>{
 		if(err){
 			console.log(err)

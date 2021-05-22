@@ -69,13 +69,19 @@ router.get('/_site_settings', (req, res) =>{
 	})	
 });
 
+
+router.get('/_shipping_details', (req, res) =>{
+	cache.safeRetrieveCache('_shipping').then((response) =>{
+		return res.json({
+			data : response
+		})
+	}).catch((error) => {
+		res.send(err)
+	})	
+})
+
 // Used to initalize site in BG and get all data
 router.get('/all', (req, res) => {
-
-	let siteSettings;
-	let products;
-	let paintings;
-	// Retrieve  
 
 
 	Promise.all(
@@ -85,7 +91,8 @@ router.get('/all', (req, res) => {
 		cache.safeRetrieveCache('_products'),
 		cache.safeRetrieveCache('_content'),
 		cache.safeRetrieveCache('_mixes'),
-		cache.safeRetrieveCache('_campaigns')
+		cache.safeRetrieveCache('_campaigns'),
+		cache.safeRetrieveCache('_shipping'),
 		]
 		).then((values) => {
   	 		return res.json({

@@ -10,12 +10,12 @@ const router = express.Router()
 
 
 // Public Folder
-router.use(express.static('./../public'));
+router.use(express.static('./../../public'));
 
 // Set The Storage Engine
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-      callback(null,`./../art/public/images/${req.params.type.substring(1 , req.params.type.length)}`);
+      callback(null,`./../../art/public/images/${req.params.type.substring(1 , req.params.type.length)}`);
     },
   filename: function(req, file, cb){
     cb(null,file.originalname);
